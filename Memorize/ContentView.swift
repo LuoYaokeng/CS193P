@@ -8,61 +8,76 @@
 import SwiftUI
 
 struct ContentView: View {
-    let emojis: Array<String> = ["1","2","3","4","1","2","3","4","1","2","3","4","1","2","3","4","1","2","3","4"]
+    let theme1: Array<String> = ["⚽️","🏀","🏈","⚾️","🥎","🎾","🏐","🏉","🥏","🎱","🏓"]
+    let theme2: Array<String> = ["🚗","🚕","🚙","🚌","🚎","🏎️","🚓","🚑","🚒","🚐","🛻"]
+    let theme3: Array<String> = ["🚡","🚠","🚟","🚃","🚋","🚞","🚝","🚄","🚅","🚈","🚂"]
+    
+    let cardCountTheme1 : Int = 4
+    let cardCountTheme2 : Int = 5
+    let cardCountTheme3 : Int = 6
     
     @State var cardCount: Int = 4
     
+    @State var contentArray: Array<String> = ["⚽️","🏀","🏈","⚾️","🥎","🎾","🏐","🏉","🥏","🎱","🏓"]
+    
+//    var cardCount
+    
     var body: some View {
         VStack{
+            Label("Memorize!", systemImage: "").font(.largeTitle)
             ScrollView{
                 cards
             }
             Spacer()
-            cardCountAdjusters
+            themeChangeButtons
         }
         .padding()
     }
     
     var cards: some View{
         LazyVGrid(columns: [GridItem(.adaptive(minimum: 120))]){
-            ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content:emojis[index])
+            ForEach(0..<contentArray.count, id: \.self) { index in
+                CardView(content:contentArray[index])
                     .aspectRatio(2/3, contentMode:.fit)
             }
         }
         .foregroundColor(.orange)
     }
     
-    var cardCountAdjusters: some View{
+    var themeChangeButtons: some View{
         HStack{
-            cardRemover
+            themeChangeButton1
             Spacer()
-            cardAdder
+            themeChangeButton2
+            Spacer()
+            themeChangeButton3
         }
-        .imageScale(.large)
-        .font(.largeTitle)
     }
     
-    func cardCountAdjuster(by offset:Int, symbol: String)->some View{
+    func themeChangeButton(theme:Array<String>, symbol:String)->some View{
         Button(action: {
-            cardCount += offset
-        },label:{
+            contentArray = theme
+            print(contentArray)
+        }, label: {
             Image(systemName: symbol)
         })
-        .disabled(cardCount + offset < 1 || cardCount + offset > emojis.count)
     }
     
-    var cardRemover: some View{
-        return cardCountAdjuster(by: -1, symbol: "rectangle.stack.badge.minus.fill")
+    var themeChangeButton1:some View{
+        return themeChangeButton(theme: theme1,symbol: "soccerball")
     }
     
-    var cardAdder: some View{
-        return cardCountAdjuster(by: +1, symbol: "rectangle.stack.badge.plus.fill")
+    var themeChangeButton2:some View{
+        return themeChangeButton(theme: theme2,symbol: "car.fill")
+    }
+    
+    var themeChangeButton3:some View{
+        return themeChangeButton(theme: theme3,symbol: "train.side.rear.car")
     }
 }
 
 struct CardView: View{
-    let content : String
+    let content: String
     @State var isFaceUp = true
     
     var body: some View{
@@ -71,9 +86,9 @@ struct CardView: View{
             Group{
                 base.foregroundColor(.white)
                 base.strokeBorder(lineWidth: 2)
-                Text("👻").font(.largeTitle)
+                Text(content).font(.largeTitle)
             }
-            .opacity(isFaceUp ? 0 : 1)
+            .opacity(isFaceUp ? 1 : 0)
             base.fill().opacity(isFaceUp ? 0 : 1)
         }
         .onTapGesture{
